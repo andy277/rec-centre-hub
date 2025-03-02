@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import RecCenterDetail from "./pages/RecCenterDetail";
 import NotFound from "./pages/NotFound";
 import Centers from "./pages/Centers";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/centers" element={<Centers />} />
           <Route path="/center/:id" element={<RecCenterDetail />} />
+          <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

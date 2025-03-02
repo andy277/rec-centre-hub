@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Search } from 'lucide-react';
@@ -50,7 +49,7 @@ const Navbar = () => {
             <Link 
               to="/centers" 
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname.includes('/centers') ? 'text-primary' : 'text-foreground/90'
+                location.pathname.includes('/centers') || location.pathname.includes('/center/') ? 'text-primary' : 'text-foreground/90'
               }`}
             >
               Recreation Centers
@@ -112,7 +111,7 @@ const Navbar = () => {
               <Link 
                 to="/centers" 
                 className={`px-4 py-2 text-base font-medium transition-colors ${
-                  location.pathname.includes('/centers') ? 'text-primary bg-secondary/50 rounded-md' : 'hover:text-primary hover:bg-secondary/30 rounded-md'
+                  location.pathname.includes('/centers') || location.pathname.includes('/center/') ? 'text-primary bg-secondary/50 rounded-md' : 'hover:text-primary hover:bg-secondary/30 rounded-md'
                 }`}
               >
                 Recreation Centers
