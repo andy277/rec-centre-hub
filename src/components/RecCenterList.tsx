@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Layout, Grid } from 'lucide-react';
 import RecCenter from './RecCenter';
@@ -9,7 +8,7 @@ interface RecCenterListProps {
   centers: RecCenterType[];
 }
 
-const RecCenterList = ({ centers }: RecCenterListProps) => {
+export const RecCenterList = ({ centers }: RecCenterListProps) => {
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCenters, setFilteredCenters] = useState(centers);
