@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Search } from 'lucide-react';
@@ -32,9 +33,9 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <Link 
             to="/" 
-            className="text-2xl font-bold tracking-tight transition-opacity duration-300 hover:opacity-80"
+            className="text-2xl font-bold tracking-tight transition-opacity duration-300 hover:opacity-80 bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent"
           >
-            RecHub
+            Rec Fit
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">

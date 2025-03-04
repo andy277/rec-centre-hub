@@ -42,9 +42,9 @@ const Index = () => {
       <div id="explore-section" className="container mx-auto px-4 md:px-6 py-16 md:py-24">
         <div className={`transition-all duration-1000 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <div className="max-w-xl mx-auto text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">Explore Recreation Centers</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Explore Recreation Centers</h2>
             <p className="text-lg text-foreground/80">
-              Discover the perfect recreation facility for your needs. Browse our curated selection of top-rated centers.
+              Discover the perfect recreation facility for your fitness journey. Browse our curated selection of top-rated centers.
             </p>
           </div>
           
@@ -52,12 +52,12 @@ const Index = () => {
         </div>
       </div>
       
-      <div className="bg-secondary/30 py-16 md:py-24">
+      <div className="bg-gradient-to-r from-secondary/40 to-secondary/10 py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">Why Choose Our Platform</h2>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Why Choose Rec Fit</h2>
                 <p className="text-lg text-foreground/80 mb-6">
                   We provide comprehensive information about recreation centers to help you make informed decisions about your fitness and leisure activities.
                 </p>
@@ -80,7 +80,7 @@ const Index = () => {
                   ))}
                 </ul>
               </div>
-              <div className="relative aspect-video md:aspect-square rounded-xl overflow-hidden shadow-xl">
+              <div className="relative aspect-video md:aspect-square rounded-xl overflow-hidden shadow-xl hover-scale">
                 <img 
                   src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81" 
                   alt="People enjoying a recreation center" 
@@ -93,11 +93,11 @@ const Index = () => {
         </div>
       </div>
       
-      <footer className="bg-white py-12 md:py-16">
+      <footer className="bg-white dark:bg-secondary/10 py-12 md:py-16">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <h3 className="text-xl font-bold mb-4">RecHub</h3>
+              <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Rec Fit</h3>
               <p className="text-foreground/80 max-w-md">
                 Your ultimate guide to recreation centers. Find the perfect place for your fitness, social, and leisure activities.
               </p>
@@ -118,7 +118,7 @@ const Index = () => {
               <address className="not-italic text-foreground/80">
                 <p>1234 Recreation Ave.</p>
                 <p>Portland, OR 97205</p>
-                <p className="mt-2">info@rec-hub.com</p>
+                <p className="mt-2">info@recfit.com</p>
                 <p>(503) 555-1234</p>
               </address>
             </div>
@@ -126,7 +126,7 @@ const Index = () => {
           
           <div className="mt-12 pt-6 border-t border-border/40 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-foreground/60">
-              © {new Date().getFullYear()} RecHub. All rights reserved.
+              © {new Date().getFullYear()} Rec Fit. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0 flex space-x-4">
               <a href="#" className="text-foreground/60 hover:text-primary">Terms</a>
