@@ -7,11 +7,11 @@ const About = () => {
   return (
     <>
       <Navbar />
-      <main className="pt-20 pb-12 min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <main className="pt-20 pb-12 min-h-screen bg-gradient-to-b from-background to-secondary/20">
         <Container className="py-12 md:py-16">
           <div className="flex flex-col gap-8 max-w-4xl mx-auto">
             <div className="space-y-3 animate-fade-in">
-              <h1 className="text-4xl font-bold tracking-tight text-primary">
+              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
                 About Rec Fit
               </h1>
               <p className="text-muted-foreground text-lg">
@@ -21,7 +21,7 @@ const About = () => {
             <Separator className="bg-gradient-to-r from-primary/20 to-primary/5" />
             
             <div className="prose prose-slate max-w-none">
-              <div className="bg-muted/50 rounded-xl p-6 shadow-sm border border-border/50 hover-scale">
+              <div className="bg-secondary/50 rounded-xl p-6 shadow-sm border border-border/50 hover-scale">
                 <p className="text-lg leading-relaxed">
                   Welcome to Rec Fit, your go-to resource for discovering recreational centers that match your interests and location. We believe that everyone deserves easy access to activities that enrich their lives, whether it's staying fit, learning new skills, or simply having fun.
                 </p>
@@ -40,7 +40,7 @@ const About = () => {
                     "Foster a community of active and engaged individuals."
                   ].map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-secondary text-primary-foreground text-xs font-medium">
+                      <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary text-primary-foreground text-xs font-medium">
                         {index + 1}
                       </span>
                       <span>{item}</span>
@@ -51,7 +51,7 @@ const About = () => {
               
               <div className="mt-10 space-y-6 animate-slide-up" style={{ animationDelay: "150ms" }}>
                 <h2 className="text-2xl font-semibold text-foreground/90 border-l-4 border-primary pl-4">Why We Created Rec Fit</h2>
-                <p className="text-base leading-relaxed bg-muted/30 p-4 rounded-md">
+                <p className="text-base leading-relaxed bg-secondary/30 p-4 rounded-md">
                   We noticed that finding the right recreational center can be a time-consuming and frustrating process. Sifting through countless websites and directories, only to find outdated information, was a common problem. That's why we built Rec Fit – to streamline your search and make it easier than ever to discover the perfect place for your recreational needs.
                 </p>
               </div>
@@ -64,7 +64,7 @@ const About = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                   {["Development", "Design", "Content"].map((role) => (
-                    <div key={role} className="bg-muted/20 rounded-lg p-5 text-center border border-border/50 transition-all hover:shadow-md hover:bg-muted/30">
+                    <div key={role} className="bg-secondary/20 rounded-lg p-5 text-center border border-border/50 transition-all hover:shadow-md hover:bg-secondary/30">
                       <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                         <span className="text-primary font-semibold">{role.charAt(0)}</span>
                       </div>
@@ -81,7 +81,7 @@ const About = () => {
                 </p>
               </div>
               
-              <div className="bg-muted/50 rounded-xl p-6 mt-8 border border-border shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-secondary/50 rounded-xl p-6 mt-8 border border-border shadow-sm hover:shadow-md transition-all duration-300">
                 <h3 className="text-xl font-medium mb-4 text-foreground/90">Contact Information</h3>
                 <div className="space-y-3">
                   <p className="flex items-center gap-2">

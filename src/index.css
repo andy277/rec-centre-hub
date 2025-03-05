@@ -1,35 +1,36 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 33% 99%; /* #F8F9FA - Light Background */
-    --foreground: 210 10% 23%; /* #343A40 - Dark Gray */
+    --background: 0 0% 100%;
+    --foreground: 220 14% 5%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 10% 23%;
+    --card-foreground: 220 14% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 10% 23%;
+    --popover-foreground: 220 14% 5%;
 
-    --primary: 210 100% 50%; /* #007BFF - Bright Blue */
+    --primary: 210 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 142 39% 41%; /* #28A745 - Lively Green */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 210 14% 95%;
+    --secondary-foreground: 220 14% 5%;
 
-    --muted: 0 0% 88%; /* #E0E0E0 - Medium Gray */
-    --muted-foreground: 210 10% 40%;
+    --muted: 210 14% 95%;
+    --muted-foreground: 220 8% 46%;
 
-    --accent: 45 100% 51%; /* #FFC107 - Vibrant Yellow */
-    --accent-foreground: 210 10% 23%;
+    --accent: 210 14% 95%;
+    --accent-foreground: 220 14% 5%;
 
-    --destructive: 354 70% 54%; /* #DC3545 - Energetic Red */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: 210 100% 50%;
 
     --radius: 0.75rem;
@@ -45,32 +46,32 @@
   }
 
   .dark {
-    --background: 210 10% 23%; /* #343A40 - Dark Gray */
-    --foreground: 210 33% 99%; /* #F8F9FA - Light Background */
+    --background: 220 14% 5%;
+    --foreground: 210 14% 95%;
 
-    --card: 210 10% 23%;
-    --card-foreground: 210 33% 99%;
+    --card: 220 14% 5%;
+    --card-foreground: 210 14% 95%;
 
-    --popover: 210 10% 23%;
-    --popover-foreground: 210 33% 99%;
+    --popover: 220 14% 5%;
+    --popover-foreground: 210 14% 95%;
 
-    --primary: 210 100% 50%; /* #007BFF - Bright Blue */
+    --primary: 210 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 142 39% 41%; /* #28A745 - Lively Green */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 220 8% 15%;
+    --secondary-foreground: 210 14% 95%;
 
-    --muted: 210 10% 30%;
-    --muted-foreground: 210 10% 70%;
+    --muted: 220 8% 15%;
+    --muted-foreground: 220 8% 60%;
 
-    --accent: 45 100% 51%; /* #FFC107 - Vibrant Yellow */
-    --accent-foreground: 210 10% 23%;
+    --accent: 220 8% 15%;
+    --accent-foreground: 210 14% 95%;
 
-    --destructive: 354 70% 54%; /* #DC3545 - Energetic Red */
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 14% 95%;
 
-    --border: 210 10% 30%;
-    --input: 210 10% 30%;
+    --border: 220 8% 15%;
+    --input: 220 8% 15%;
     --ring: 210 100% 50%;
     
     --sidebar-background: 240 5.9% 10%;

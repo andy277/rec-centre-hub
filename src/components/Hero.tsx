@@ -15,7 +15,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="relative h-screen overflow-hidden bg-gradient-to-b from-muted/30 to-background">
+    <section className="relative h-screen overflow-hidden bg-gradient-to-b from-secondary/30 to-background">
       <div 
         className={`absolute inset-0 bg-[url('https://images.unsplash.com/photo-1506744038136-46273834b3fb')] bg-cover bg-center bg-no-repeat transition-opacity duration-2000 ${
           isLoaded ? 'opacity-15' : 'opacity-0'
@@ -43,7 +43,7 @@ const Hero = () => {
             </Link>
             <Link
               to="/about"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-accent text-foreground font-medium transition-all duration-300 hover:bg-accent/80 hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-secondary text-foreground font-medium transition-all duration-300 hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98]"
             >
               Learn More
             </Link>
