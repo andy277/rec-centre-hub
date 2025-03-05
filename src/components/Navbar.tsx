@@ -25,7 +25,7 @@ const Navbar = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' 
+          ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' 
           : 'bg-transparent py-5'
       }`}
     >
@@ -33,7 +33,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <Link 
             to="/" 
-            className="text-2xl font-bold tracking-tight transition-opacity duration-300 hover:opacity-80 bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent"
+            className="text-2xl font-bold tracking-tight transition-opacity duration-300 hover:opacity-80 text-primary"
           >
             Rec Fit
           </Link>
@@ -75,7 +75,7 @@ const Navbar = () => {
 
           <div className="flex items-center">
             <button 
-              className="p-2 md:p-3 rounded-full text-foreground/80 hover:text-primary hover:bg-secondary transition-colors mr-1 md:mr-2"
+              className="p-2 md:p-3 rounded-full text-foreground/80 hover:text-primary hover:bg-secondary/10 transition-colors mr-1 md:mr-2"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
@@ -104,7 +104,7 @@ const Navbar = () => {
               <Link 
                 to="/" 
                 className={`px-4 py-2 text-base font-medium transition-colors ${
-                  location.pathname === '/' ? 'text-primary bg-secondary/50 rounded-md' : 'hover:text-primary hover:bg-secondary/30 rounded-md'
+                  location.pathname === '/' ? 'text-primary bg-secondary/10 rounded-md' : 'hover:text-primary hover:bg-secondary/10 rounded-md'
                 }`}
               >
                 Home
@@ -112,7 +112,7 @@ const Navbar = () => {
               <Link 
                 to="/centers" 
                 className={`px-4 py-2 text-base font-medium transition-colors ${
-                  location.pathname.includes('/centers') || location.pathname.includes('/center/') ? 'text-primary bg-secondary/50 rounded-md' : 'hover:text-primary hover:bg-secondary/30 rounded-md'
+                  location.pathname.includes('/centers') || location.pathname.includes('/center/') ? 'text-primary bg-secondary/10 rounded-md' : 'hover:text-primary hover:bg-secondary/10 rounded-md'
                 }`}
               >
                 Recreation Centers
@@ -120,7 +120,7 @@ const Navbar = () => {
               <Link 
                 to="/about" 
                 className={`px-4 py-2 text-base font-medium transition-colors ${
-                  location.pathname === '/about' ? 'text-primary bg-secondary/50 rounded-md' : 'hover:text-primary hover:bg-secondary/30 rounded-md'
+                  location.pathname === '/about' ? 'text-primary bg-secondary/10 rounded-md' : 'hover:text-primary hover:bg-secondary/10 rounded-md'
                 }`}
               >
                 About
@@ -128,7 +128,7 @@ const Navbar = () => {
               <Link 
                 to="/contact" 
                 className={`px-4 py-2 text-base font-medium transition-colors ${
-                  location.pathname === '/contact' ? 'text-primary bg-secondary/50 rounded-md' : 'hover:text-primary hover:bg-secondary/30 rounded-md'
+                  location.pathname === '/contact' ? 'text-primary bg-secondary/10 rounded-md' : 'hover:text-primary hover:bg-secondary/10 rounded-md'
                 }`}
               >
                 Contact

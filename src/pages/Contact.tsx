@@ -55,7 +55,7 @@ const Contact = () => {
       <Container className="py-12 md:py-16">
         <div className="flex flex-col gap-8 max-w-4xl mx-auto">
           <div className="space-y-3 animate-fade-in">
-            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold tracking-tight text-primary">
               Contact Us
             </h1>
             <p className="text-muted-foreground text-lg">
@@ -66,7 +66,7 @@ const Contact = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             <div className="space-y-8 animate-slide-up">
-              <div className="bg-secondary/30 p-6 rounded-xl border border-border/50 hover:shadow-md transition-all">
+              <div className="bg-muted/30 p-6 rounded-xl border border-border/50 hover:shadow-md transition-all">
                 <h2 className="text-2xl font-semibold mb-6">Get in Touch</h2>
                 <div className="space-y-5">
                   <div className="flex items-start gap-4">
@@ -118,7 +118,7 @@ const Contact = () => {
               </div>
             </div>
             
-            <div className="bg-white dark:bg-secondary/20 rounded-xl p-6 md:p-8 shadow-sm border border-border/50 animate-slide-up" style={{animationDelay: '150ms'}}>
+            <div className="bg-white dark:bg-muted/20 rounded-xl p-6 md:p-8 shadow-sm border border-border/50 animate-slide-up" style={{animationDelay: '150ms'}}>
               <h2 className="text-2xl font-semibold mb-6">Send us a Message</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
@@ -181,7 +181,7 @@ const Contact = () => {
                 
                 <Button 
                   type="submit" 
-                  className="w-full" 
+                  className="w-full bg-primary hover:bg-primary/90" 
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -200,14 +200,14 @@ const Contact = () => {
             </div>
           </div>
           
-          <div className="mt-12 bg-gradient-to-r from-secondary to-secondary/20 p-8 rounded-xl text-center">
+          <div className="mt-12 bg-gradient-to-r from-muted to-muted/20 p-8 rounded-xl text-center">
             <h3 className="text-xl font-medium mb-3">Join Our Community</h3>
             <p>Follow us on social media to stay updated with the latest fitness trends and events.</p>
             <div className="flex justify-center gap-4 mt-5">
               {['Twitter', 'Facebook', 'Instagram', 'LinkedIn'].map(platform => (
                 <div 
                   key={platform} 
-                  className="p-3 bg-white/70 dark:bg-secondary/70 rounded-full hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                  className="p-3 bg-white/70 dark:bg-muted/70 rounded-full hover:bg-primary hover:text-white transition-colors cursor-pointer"
                 >
                   {platform.charAt(0)}
                 </div>
