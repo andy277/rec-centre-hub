@@ -1,8 +1,12 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Clock, Star } from 'lucide-react';
+import { MapPin, Phone, Clock, Star, Heart } from 'lucide-react';
 import { RecCenter as RecCenterType } from '../utils/data';
+import { useAuth } from '@/contexts/AuthContext';
+import { useFavorites } from '@/hooks/useFavorites';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface RecCenterProps {
   center: RecCenterType;
@@ -11,6 +15,13 @@ interface RecCenterProps {
 
 const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { user } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation when clicking the star
+    toggleFavorite(center.id);
+  };
   
   const renderRatingStars = (rating: number) => {
     return (
@@ -34,11 +45,38 @@ const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
     );
   };
 
+  const renderFavoriteButton = () => {
+    const isFav = isFavorite(center.id);
+    
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={handleFavoriteClick}
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 bg-white/60 backdrop-blur-sm hover:bg-white/80 z-10 h-8 w-8 rounded-full"
+            >
+              <Heart 
+                className={`h-5 w-5 ${isFav ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} 
+              />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {isFav ? 'Remove from favorites' : 'Add to favorites'}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
+
   if (layout === 'list') {
     return (
       <div className="group relative overflow-hidden bg-white rounded-xl shadow-sm border border-border/50 hover-scale">
         <Link to={`/center/${center.id}`} className="flex flex-col md:flex-row w-full h-full">
           <div className="md:w-1/3 relative aspect-video md:aspect-square overflow-hidden">
+            {user && renderFavoriteButton()}
             <div className={`absolute inset-0 bg-secondary/20 flex items-center justify-center transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
               <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
             </div>
@@ -98,6 +136,7 @@ const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
     <div className="group relative overflow-hidden bg-white rounded-xl shadow-sm border border-border/50 hover-scale">
       <Link to={`/center/${center.id}`} className="block h-full">
         <div className="relative aspect-video overflow-hidden">
+          {user && renderFavoriteButton()}
           <div className={`absolute inset-0 bg-secondary/20 flex items-center justify-center transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
             <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
           </div>

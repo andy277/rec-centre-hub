@@ -1,9 +1,11 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { MapPin, Phone, Globe, Mail, Clock, ArrowLeft, Check, Calendar } from 'lucide-react';
+import { MapPin, Phone, Globe, Mail, Clock, ArrowLeft, Check, Calendar, Heart } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import { getCenterById, RecCenter, Program } from '../utils/data';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { useFavorites } from '@/hooks/useFavorites';
 
 const RecCenterDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +14,8 @@ const RecCenterDetail = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'info' | 'programs' | 'amenities'>('info');
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { user } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
   
   useEffect(() => {
     const fetchCenter = () => {
@@ -20,7 +24,6 @@ const RecCenterDetail = () => {
         if (foundCenter) {
           setCenter(foundCenter);
         } else {
-          // Center not found, navigate to 404 or centers page
           navigate('/centers');
         }
       }
@@ -58,6 +61,12 @@ const RecCenterDetail = () => {
       </div>
     );
   }
+  
+  const handleFavoriteToggle = () => {
+    if (center) {
+      toggleFavorite(center.id);
+    }
+  };
   
   const renderProgramCard = (program: Program) => (
     <div key={program.id} className="bg-white rounded-xl shadow-sm border border-border/50 p-5 hover-scale">
@@ -269,6 +278,17 @@ const RecCenterDetail = () => {
                 </div>
                 
                 <div className="space-y-4">
+                  {user && (
+                    <Button
+                      onClick={handleFavoriteToggle}
+                      className={`w-full ${isFavorite(center.id) ? 'bg-red-500 hover:bg-red-600' : ''}`}
+                      variant={isFavorite(center.id) ? "default" : "outline"}
+                    >
+                      <Heart className={`mr-2 h-4 w-4 ${isFavorite(center.id) ? 'fill-white' : ''}`} />
+                      {isFavorite(center.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                    </Button>
+                  )}
+                
                   <a 
                     href={`https://maps.google.com/?q=${center.address},${center.city},${center.state},${center.postalCode}`}
                     target="_blank"
