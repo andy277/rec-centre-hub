@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
 import UserMenu from "./UserMenu";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navigation = [
   { name: "Home", to: "/" },
@@ -18,6 +18,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -121,6 +122,20 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+            {user && (
+              <Link
+                to="/favorites"
+                className={cn(
+                  "block text-base font-medium transition-colors flex items-center",
+                  location.pathname === "/favorites"
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Heart className="mr-2 h-4 w-4" />
+                My Favorites
+              </Link>
+            )}
           </div>
         </div>
       </div>

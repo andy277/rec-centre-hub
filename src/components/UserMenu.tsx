@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   DropdownMenu, 
@@ -9,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -53,6 +52,12 @@ const UserMenu = () => {
           <Link to="/profile" className="cursor-pointer w-full flex items-center">
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/favorites" className="cursor-pointer w-full flex items-center">
+            <Heart className="mr-2 h-4 w-4" />
+            <span>My Favorites</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
