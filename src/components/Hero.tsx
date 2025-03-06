@@ -2,9 +2,11 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -41,12 +43,21 @@ const Hero = () => {
               Browse Centers
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
-            <Link
-              to="/about"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-secondary text-foreground font-medium transition-all duration-300 hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Learn More
-            </Link>
+            {!user ? (
+              <Link
+                to="/auth"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-secondary text-foreground font-medium transition-all duration-300 hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Sign In / Sign Up
+              </Link>
+            ) : (
+              <Link
+                to="/profile"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-secondary text-foreground font-medium transition-all duration-300 hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Your Profile
+              </Link>
+            )}
           </div>
         </div>
         
