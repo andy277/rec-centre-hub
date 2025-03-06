@@ -1,62 +1,182 @@
-import { Link } from "react-router-dom";
-import { MapPin, Star } from "lucide-react";
-import { RecCenter as RecCenterType } from "@/utils/data";
-import { useFavorites } from "@/hooks/useFavorites";
-import { cn } from "@/lib/utils";
+
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { MapPin, Phone, Clock, Star, Heart } from 'lucide-react';
+import { RecCenter as RecCenterType } from '../utils/data';
+import { useAuth } from '@/contexts/AuthContext';
+import { useFavorites } from '@/hooks/useFavorites';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface RecCenterProps {
   center: RecCenterType;
+  layout?: 'grid' | 'list';
 }
 
-export function RecCenter({ center }: RecCenterProps) {
+const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const { user } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const isFav = isFavorite(center.id);
-
+  
   const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); // Prevent navigation when clicking the star
     toggleFavorite(center.id);
   };
+  
+  const renderRatingStars = (rating: number) => {
+    return (
+      <div className="flex items-center">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={`w-4 h-4 ${
+              i < Math.floor(rating)
+                ? 'text-yellow-400 fill-yellow-400'
+                : i < rating
+                ? 'text-yellow-400 fill-yellow-400 opacity-50'
+                : 'text-gray-300'
+            }`}
+          />
+        ))}
+        <span className="ml-2 text-sm font-medium">
+          {rating.toFixed(1)} ({center.reviews})
+        </span>
+      </div>
+    );
+  };
 
+  const renderFavoriteButton = () => {
+    const isFav = isFavorite(center.id);
+    
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={handleFavoriteClick}
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 bg-white/60 backdrop-blur-sm hover:bg-white/80 z-10 h-8 w-8 rounded-full"
+            >
+              <Heart 
+                className={`h-5 w-5 ${isFav ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} 
+              />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {isFav ? 'Remove from favorites' : 'Add to favorites'}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
+
+  if (layout === 'list') {
+    return (
+      <div className="group relative overflow-hidden bg-white rounded-xl shadow-sm border border-border/50 hover-scale">
+        <Link to={`/center/${center.id}`} className="flex flex-col md:flex-row w-full h-full">
+          <div className="md:w-1/3 relative aspect-video md:aspect-square overflow-hidden">
+            {user && renderFavoriteButton()}
+            <div className={`absolute inset-0 bg-secondary/20 flex items-center justify-center transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
+              <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+            </div>
+            <img
+              src={center.imageUrl}
+              alt={center.name}
+              className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setImageLoaded(true)}
+            />
+          </div>
+          
+          <div className="p-5 flex-1 flex flex-col">
+            <div className="mb-auto">
+              <div className="flex justify-between items-start">
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">{center.name}</h3>
+                {renderRatingStars(center.rating)}
+              </div>
+              
+              <div className="mt-2 flex items-center text-sm text-muted-foreground">
+                <MapPin className="mr-1 h-4 w-4 text-primary/70" />
+                <span>{center.city}, {center.state}</span>
+              </div>
+              
+              <p className="mt-3 text-sm line-clamp-2 text-foreground/80">{center.description}</p>
+              
+              <div className="mt-4 flex flex-wrap gap-2">
+                {center.amenities.slice(0, 3).map((amenity, index) => (
+                  <span key={index} className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-foreground/80">
+                    {amenity}
+                  </span>
+                ))}
+                {center.amenities.length > 3 && (
+                  <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-foreground/80">
+                    +{center.amenities.length - 3} more
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap justify-between gap-4">
+              <div className="flex items-center text-sm">
+                <Phone className="mr-1 h-4 w-4 text-primary/70" />
+                <span>{center.phone}</span>
+              </div>
+              <div className="flex items-center text-sm">
+                <Clock className="mr-1 h-4 w-4 text-primary/70" />
+                <span>Open today: {center.hours.monday}</span>
+              </div>
+            </div>
+          </div>
+        </Link>
+      </div>
+    );
+  }
+  
   return (
-    <Link
-      to={`/centers/${center.id}`}
-      className="flex flex-col overflow-hidden rounded-xl border border-border/40 bg-background shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1"
-    >
-      <div className="relative">
-        <img
-          src={center.imageUrl}
-          alt={center.name}
-          className="aspect-video w-full object-cover"
-        />
-      </div>
-      
-      <div className="p-5">
-        <div className="flex items-start justify-between">
-          <h3 className="text-xl font-semibold">{center.name}</h3>
-          <button
-            onClick={handleFavoriteClick}
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-full transition-colors",
-              isFav ? "text-red-500" : "text-gray-400 hover:text-gray-600"
+    <div className="group relative overflow-hidden bg-white rounded-xl shadow-sm border border-border/50 hover-scale">
+      <Link to={`/center/${center.id}`} className="block h-full">
+        <div className="relative aspect-video overflow-hidden">
+          {user && renderFavoriteButton()}
+          <div className={`absolute inset-0 bg-secondary/20 flex items-center justify-center transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
+            <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+          </div>
+          <img
+            src={center.imageUrl}
+            alt={center.name}
+            className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={() => setImageLoaded(true)}
+          />
+          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full py-1 px-2 flex items-center">
+            {renderRatingStars(center.rating)}
+          </div>
+        </div>
+        
+        <div className="p-5">
+          <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{center.name}</h3>
+          
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <MapPin className="mr-1 h-4 w-4 text-primary/70" />
+            <span>{center.city}, {center.state}</span>
+          </div>
+          
+          <p className="mt-3 text-sm line-clamp-2 text-foreground/80">{center.description}</p>
+          
+          <div className="mt-4 flex flex-wrap gap-2">
+            {center.amenities.slice(0, 3).map((amenity, index) => (
+              <span key={index} className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-foreground/80">
+                {amenity}
+              </span>
+            ))}
+            {center.amenities.length > 3 && (
+              <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-foreground/80">
+                +{center.amenities.length - 3} more
+              </span>
             )}
-            aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
-          >
-            <Star className={cn("h-5 w-5", isFav ? "fill-current" : "")} />
-          </button>
+          </div>
         </div>
-        
-        <div className="mt-2 flex items-center text-sm text-muted-foreground">
-          <MapPin className="mr-1.5 h-4 w-4" />
-          <span>{center.city}, {center.state}</span>
-        </div>
-        
-        <div className="mt-3 flex items-center">
-          <Star className="mr-1 h-4 w-4 text-yellow-500" />
-          <span className="text-sm font-medium">{center.rating}</span>
-          <span className="ml-1 text-xs text-muted-foreground">({center.reviews} reviews)</span>
-        </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
-}
+};
+
+export default RecCenter;
