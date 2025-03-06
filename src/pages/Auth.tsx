@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 
 const Auth = () => {
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
   const from = location.state?.from || '/';
 
@@ -66,16 +66,21 @@ const SignInForm = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signIn(email, password);
+    try {
+      const { error } = await signIn(email, password);
 
-    if (error) {
-      toast.error(error.message || "Failed to sign in");
+      if (error) {
+        toast.error(error.message || "Failed to sign in");
+        setIsLoading(false);
+        return;
+      }
+
+      toast.success("Signed in successfully!");
+      // No need to set loading to false here as we'll redirect
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred during sign in");
       setIsLoading(false);
-      return;
     }
-
-    toast.success("Signed in successfully!");
-    // No need to set loading to false here as we'll redirect
   };
 
   return (
@@ -126,16 +131,21 @@ const SignUpForm = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signUp(email, password, username);
+    try {
+      const { error } = await signUp(email, password, username);
 
-    if (error) {
-      toast.error(error.message || "Failed to sign up");
+      if (error) {
+        toast.error(error.message || "Failed to sign up");
+        setIsLoading(false);
+        return;
+      }
+
+      toast.success("Signed up successfully! Check your email to confirm your account.");
       setIsLoading(false);
-      return;
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred during sign up");
+      setIsLoading(false);
     }
-
-    toast.success("Signed up successfully! Check your email to confirm your account.");
-    setIsLoading(false);
   };
 
   return (
