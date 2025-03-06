@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/hooks/useFavorites';
 
 const RecCenterDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { centerId } = useParams<{ centerId: string }>();
   const navigate = useNavigate();
   const [center, setCenter] = useState<RecCenter | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,8 +19,8 @@ const RecCenterDetail = () => {
   
   useEffect(() => {
     const fetchCenter = () => {
-      if (id) {
-        const foundCenter = getCenterById(id);
+      if (centerId) {
+        const foundCenter = getCenterById(centerId);
         if (foundCenter) {
           setCenter(foundCenter);
         } else {
@@ -32,7 +32,7 @@ const RecCenterDetail = () => {
     };
     
     fetchCenter();
-  }, [id, navigate]);
+  }, [centerId, navigate]);
   
   if (loading) {
     return (

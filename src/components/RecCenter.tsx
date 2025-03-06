@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Clock, Star, Heart } from 'lucide-react';
@@ -74,7 +73,7 @@ const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
   if (layout === 'list') {
     return (
       <div className="group relative overflow-hidden bg-white rounded-xl shadow-sm border border-border/50 hover-scale">
-        <Link to={`/center/${center.id}`} className="flex flex-col md:flex-row w-full h-full">
+        <Link to={`/centers/${center.id}`} className="flex flex-col md:flex-row w-full h-full">
           <div className="md:w-1/3 relative aspect-video md:aspect-square overflow-hidden">
             {user && renderFavoriteButton()}
             <div className={`absolute inset-0 bg-secondary/20 flex items-center justify-center transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
@@ -134,7 +133,7 @@ const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
   
   return (
     <div className="group relative overflow-hidden bg-white rounded-xl shadow-sm border border-border/50 hover-scale">
-      <Link to={`/center/${center.id}`} className="block h-full">
+      <Link to={`/centers/${center.id}`} className="block h-full">
         <div className="relative aspect-video overflow-hidden">
           {user && renderFavoriteButton()}
           <div className={`absolute inset-0 bg-secondary/20 flex items-center justify-center transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}>
