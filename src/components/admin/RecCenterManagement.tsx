@@ -37,7 +37,7 @@ import {
 import { Loader2, Plus, Pencil, Trash } from "lucide-react";
 import type { RecCenter } from "@/types/database";
 
-const initialCenterState = {
+const initialCenterState: RecCenter = {
   id: "",
   name: "",
   description: "",
@@ -89,7 +89,16 @@ const RecCenterManagement = () => {
         toast.error("Failed to load recreation centers");
         console.error("Error loading centers:", error);
       } else {
-        setCenters(data || []);
+        // Ensure the data conforms to our RecCenter type
+        const typedCenters: RecCenter[] = data?.map(center => ({
+          ...center,
+          // Ensure hours has the correct structure
+          hours: center.hours as RecCenter['hours'],
+          // Ensure coordinates has the correct structure
+          coordinates: center.coordinates as RecCenter['coordinates']
+        })) || [];
+        
+        setCenters(typedCenters);
       }
       setLoading(false);
     };
@@ -153,7 +162,14 @@ const RecCenterManagement = () => {
       }
 
       toast.success("Recreation center created successfully");
-      setCenters([...centers, data[0]]);
+      // Properly type the new center
+      const newCenter = {
+        ...data[0],
+        hours: data[0].hours as RecCenter['hours'],
+        coordinates: data[0].coordinates as RecCenter['coordinates']
+      };
+      
+      setCenters([...centers, newCenter]);
       setIsCreateDialogOpen(false);
       setCurrentCenter(initialCenterState);
       setAmenitiesInput("");
@@ -184,8 +200,15 @@ const RecCenterManagement = () => {
       }
 
       toast.success("Recreation center updated successfully");
+      // Properly type the updated center
+      const updatedCenter = {
+        ...data[0],
+        hours: data[0].hours as RecCenter['hours'],
+        coordinates: data[0].coordinates as RecCenter['coordinates']
+      };
+      
       setCenters(
-        centers.map((c) => (c.id === centerData.id ? data[0] : c))
+        centers.map((c) => (c.id === centerData.id ? updatedCenter : c))
       );
       setIsEditDialogOpen(false);
     } catch (error) {

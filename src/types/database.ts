@@ -18,7 +18,7 @@ export interface RecCenter {
     friday: string;
     saturday: string;
     sunday: string;
-  };
+  } | Record<string, string>;
   amenities: string[];
   image_url: string;
   rating: number;
@@ -26,7 +26,7 @@ export interface RecCenter {
   coordinates: {
     lat: number;
     lng: number;
-  };
+  } | Record<string, number>;
 }
 
 export interface Program {
