@@ -1,7 +1,8 @@
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Clock, Star, Heart } from 'lucide-react';
-import { RecCenter as RecCenterType } from '../utils/data';
+import { RecCenter as RecCenterType } from '@/types/database';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Button } from '@/components/ui/button';
@@ -80,7 +81,7 @@ const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
               <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
             </div>
             <img
-              src={center.imageUrl}
+              src={center.image_url}
               alt={center.name}
               className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setImageLoaded(true)}
@@ -140,7 +141,7 @@ const RecCenter = ({ center, layout = 'grid' }: RecCenterProps) => {
             <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
           </div>
           <img
-            src={center.imageUrl}
+            src={center.image_url}
             alt={center.name}
             className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}

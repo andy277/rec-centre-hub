@@ -54,6 +54,101 @@ export type Database = {
         }
         Relationships: []
       }
+      programs: {
+        Row: {
+          age_group: string
+          description: string
+          id: string
+          name: string
+          price: string
+          rec_center_id: string | null
+          schedule: string
+        }
+        Insert: {
+          age_group: string
+          description: string
+          id: string
+          name: string
+          price: string
+          rec_center_id?: string | null
+          schedule: string
+        }
+        Update: {
+          age_group?: string
+          description?: string
+          id?: string
+          name?: string
+          price?: string
+          rec_center_id?: string | null
+          schedule?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programs_rec_center_id_fkey"
+            columns: ["rec_center_id"]
+            isOneToOne: false
+            referencedRelation: "rec_centers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rec_centers: {
+        Row: {
+          address: string
+          amenities: string[]
+          city: string
+          coordinates: Json
+          description: string
+          email: string
+          hours: Json
+          id: string
+          image_url: string
+          name: string
+          phone: string
+          postal_code: string
+          rating: number
+          reviews: number
+          state: string
+          website: string
+        }
+        Insert: {
+          address: string
+          amenities: string[]
+          city: string
+          coordinates: Json
+          description: string
+          email: string
+          hours: Json
+          id: string
+          image_url: string
+          name: string
+          phone: string
+          postal_code: string
+          rating: number
+          reviews: number
+          state: string
+          website: string
+        }
+        Update: {
+          address?: string
+          amenities?: string[]
+          city?: string
+          coordinates?: Json
+          description?: string
+          email?: string
+          hours?: Json
+          id?: string
+          image_url?: string
+          name?: string
+          phone?: string
+          postal_code?: string
+          rating?: number
+          reviews?: number
+          state?: string
+          website?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,26 +1,75 @@
-import { useState } from 'react';
-import { Layout, Grid } from 'lucide-react';
+
+import { useState, useEffect } from 'react';
+import { Layout, Grid, Loader2 } from 'lucide-react';
 import RecCenter from './RecCenter';
 import SearchFilter from './SearchFilter';
-import { RecCenter as RecCenterType, filterCenters } from '../utils/data';
+import { RecCenter as RecCenterType } from '@/types/database';
+import { fetchAllCenters, filterCenters } from '@/services/recCenterService';
 
 interface RecCenterListProps {
-  centers: RecCenterType[];
+  initialCenters?: RecCenterType[];
 }
 
-export const RecCenterList = ({ centers }: RecCenterListProps) => {
+export const RecCenterList = ({ initialCenters }: RecCenterListProps) => {
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredCenters, setFilteredCenters] = useState(centers);
+  const [centers, setCenters] = useState<RecCenterType[]>(initialCenters || []);
+  const [filteredCenters, setFilteredCenters] = useState<RecCenterType[]>(initialCenters || []);
+  const [loading, setLoading] = useState(!initialCenters);
+  const [error, setError] = useState<string | null>(null);
   
-  const handleSearch = (query: string) => {
+  useEffect(() => {
+    if (!initialCenters) {
+      const loadCenters = async () => {
+        try {
+          setLoading(true);
+          const data = await fetchAllCenters();
+          setCenters(data);
+          setFilteredCenters(data);
+        } catch (err) {
+          console.error("Failed to load rec centers:", err);
+          setError("Failed to load recreation centers. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      loadCenters();
+    }
+  }, [initialCenters]);
+  
+  const handleSearch = async (query: string) => {
     setSearchQuery(query);
-    if (query.trim() === '') {
-      setFilteredCenters(centers);
-    } else {
-      setFilteredCenters(filterCenters(query));
+    setLoading(true);
+    
+    try {
+      if (query.trim() === '') {
+        setFilteredCenters(centers);
+      } else {
+        const filtered = await filterCenters(query);
+        setFilteredCenters(filtered);
+      }
+    } catch (err) {
+      console.error("Error filtering centers:", err);
+      setError("Failed to search recreation centers. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (error) {
+    return (
+      <div className="py-12 text-center">
+        <div className="text-destructive mb-4">{error}</div>
+        <button 
+          onClick={() => window.location.reload()}
+          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -56,7 +105,12 @@ export const RecCenterList = ({ centers }: RecCenterListProps) => {
       
       <SearchFilter onSearch={handleSearch} />
       
-      {filteredCenters.length === 0 ? (
+      {loading ? (
+        <div className="py-12 flex flex-col items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+          <p className="text-muted-foreground">Loading recreation centers...</p>
+        </div>
+      ) : filteredCenters.length === 0 ? (
         <div className="py-8 text-center">
           <p className="text-lg text-muted-foreground">No centers found matching "{searchQuery}"</p>
           <button 

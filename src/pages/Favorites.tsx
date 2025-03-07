@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Loader2 } from 'lucide-react';
@@ -7,8 +8,8 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/hooks/useFavorites';
-import { getCenterById } from '@/utils/data';
-import type { RecCenter } from '@/utils/data';
+import { fetchCenterById } from '@/services/recCenterService';
+import type { RecCenter } from '@/types/database';
 import RecCenterCard from '@/components/RecCenter';
 
 const Favorites = () => {
@@ -16,12 +17,26 @@ const Favorites = () => {
   const { favorites, loading: favoritesLoading } = useFavorites();
   const [favoriteCenters, setFavoriteCenters] = useState<RecCenter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!favoritesLoading) {
-      const centers = favorites.map(id => getCenterById(id)).filter(Boolean) as RecCenter[];
-      setFavoriteCenters(centers);
-      setLoading(false);
+      const loadFavorites = async () => {
+        try {
+          setLoading(true);
+          const centerPromises = favorites.map(id => fetchCenterById(id));
+          const centers = await Promise.all(centerPromises);
+          // Filter out any null values from centers that might not exist
+          setFavoriteCenters(centers.filter(Boolean) as RecCenter[]);
+        } catch (err) {
+          console.error("Error loading favorite centers:", err);
+          setError("Failed to load your favorite centers. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      loadFavorites();
     }
   }, [favorites, favoritesLoading]);
 
@@ -77,6 +92,13 @@ const Favorites = () => {
                 <Loader2 className="h-8 w-8 text-primary animate-spin mb-4" />
                 <p className="text-muted-foreground">Loading your favorites...</p>
               </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <p className="text-destructive mb-4">{error}</p>
+                <Button variant="outline" onClick={() => window.location.reload()}>
+                  Try Again
+                </Button>
+              </div>
             ) : favoriteCenters.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <div className="w-16 h-16 rounded-full bg-secondary/50 flex items-center justify-center mb-6">
@@ -104,4 +126,4 @@ const Favorites = () => {
   );
 };
 
-export default Favorites; 
+export default Favorites;

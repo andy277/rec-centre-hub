@@ -1,6 +1,5 @@
 
 import { RecCenterList } from "@/components/RecCenterList";
-import { recCenters } from "@/utils/data";
 import { Container } from "@/components/ui/container";
 import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/Navbar";
@@ -21,7 +20,7 @@ const Centers = () => {
               </p>
             </div>
             <Separator className="bg-gradient-to-r from-primary/20 to-primary/5" />
-            <RecCenterList centers={recCenters} />
+            <RecCenterList />
           </div>
         </Container>
       </main>

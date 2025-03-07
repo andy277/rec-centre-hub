@@ -1,45 +1,82 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { MapPin, Phone, Globe, Mail, Clock, ArrowLeft, Check, Calendar, Heart } from 'lucide-react';
+import { MapPin, Phone, Globe, Mail, Clock, ArrowLeft, Check, Calendar, Heart, Loader2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import { getCenterById, RecCenter, Program } from '../utils/data';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/hooks/useFavorites';
+import { fetchCenterById, fetchCenterPrograms } from '@/services/recCenterService';
+import type { RecCenter, Program } from '@/types/database';
 
 const RecCenterDetail = () => {
   const { centerId } = useParams<{ centerId: string }>();
   const navigate = useNavigate();
   const [center, setCenter] = useState<RecCenter | null>(null);
+  const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'info' | 'programs' | 'amenities'>('info');
   const [imageLoaded, setImageLoaded] = useState(false);
   const { user } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   
   useEffect(() => {
-    const fetchCenter = () => {
-      if (centerId) {
-        const foundCenter = getCenterById(centerId);
-        if (foundCenter) {
-          setCenter(foundCenter);
-        } else {
-          navigate('/centers');
-        }
+    const fetchCenterDetails = async () => {
+      if (!centerId) {
+        navigate('/centers');
+        return;
       }
-      
-      setLoading(false);
+
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Fetch center details
+        const centerData = await fetchCenterById(centerId);
+        if (!centerData) {
+          navigate('/centers');
+          return;
+        }
+        setCenter(centerData);
+        
+        // Fetch center programs
+        const programsData = await fetchCenterPrograms(centerId);
+        setPrograms(programsData);
+      } catch (err) {
+        console.error("Error loading center details:", err);
+        setError("Failed to load recreation center details. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     };
     
-    fetchCenter();
+    fetchCenterDetails();
   }, [centerId, navigate]);
   
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+          <Loader2 className="w-12 h-12 text-primary animate-spin" />
           <p className="mt-4 text-lg">Loading center details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-destructive mb-4">Error</h2>
+          <p className="mb-6 text-muted-foreground">{error}</p>
+          <Link 
+            to="/centers" 
+            className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white font-medium transition-all duration-300 hover:bg-primary/90"
+          >
+            Back to All Centers
+          </Link>
         </div>
       </div>
     );
@@ -80,7 +117,7 @@ const RecCenterDetail = () => {
         </div>
         <div className="flex items-center">
           <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-foreground/80">
-            {program.ageGroup}
+            {program.age_group}
           </span>
         </div>
         <div className="font-medium text-primary">{program.price}</div>
@@ -98,7 +135,7 @@ const RecCenterDetail = () => {
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
           </div>
           <img
-            src={center.imageUrl}
+            src={center.image_url}
             alt={center.name}
             className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
@@ -117,7 +154,7 @@ const RecCenterDetail = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">{center.name}</h1>
               <div className="flex items-center mt-2 text-white/90">
                 <MapPin className="mr-1 h-4 w-4" />
-                <span>{center.address}, {center.city}, {center.state} {center.postalCode}</span>
+                <span>{center.address}, {center.city}, {center.state} {center.postal_code}</span>
               </div>
             </div>
           </div>
@@ -227,9 +264,15 @@ const RecCenterDetail = () => {
                         Check out the programs offered at {center.name}. Contact the center directly for registration details and availability.
                       </p>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        {center.programs.map(renderProgramCard)}
-                      </div>
+                      {programs.length === 0 ? (
+                        <div className="text-center py-8">
+                          <p className="text-muted-foreground">No programs currently listed for this center.</p>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                          {programs.map(renderProgramCard)}
+                        </div>
+                      )}
                     </div>
                   )}
                   
@@ -267,7 +310,7 @@ const RecCenterDetail = () => {
                 <h3 className="text-lg font-semibold mb-3">Location</h3>
                 <address className="not-italic text-foreground/80 mb-4">
                   {center.address}<br />
-                  {center.city}, {center.state} {center.postalCode}
+                  {center.city}, {center.state} {center.postal_code}
                 </address>
                 
                 <div className="aspect-video bg-secondary/30 rounded-lg mb-6 overflow-hidden">
@@ -290,7 +333,7 @@ const RecCenterDetail = () => {
                   )}
                 
                   <a 
-                    href={`https://maps.google.com/?q=${center.address},${center.city},${center.state},${center.postalCode}`}
+                    href={`https://maps.google.com/?q=${center.address},${center.city},${center.state},${center.postal_code}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-full px-4 py-2 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground font-medium transition-colors"

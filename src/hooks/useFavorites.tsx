@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,11 +27,13 @@ export const useFavorites = () => {
         if (error) {
           console.error('Error loading favorites:', error);
           toast.error('Failed to load favorites');
+          setFavorites([]);
         } else {
           setFavorites(data.map(fav => fav.rec_center_id));
         }
       } catch (error) {
         console.error('Error in loadFavorites:', error);
+        setFavorites([]);
       } finally {
         setLoading(false);
       }

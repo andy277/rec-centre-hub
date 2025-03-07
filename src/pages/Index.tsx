@@ -4,11 +4,29 @@ import { ArrowDown } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import RecCenterList from '../components/RecCenterList';
-import { recCenters } from '../utils/data';
+import { fetchAllCenters } from '@/services/recCenterService';
+import type { RecCenter } from '@/types/database';
 
 const Index = () => {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [centers, setCenters] = useState<RecCenter[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const loadCenters = async () => {
+      try {
+        const data = await fetchAllCenters();
+        setCenters(data);
+      } catch (error) {
+        console.error('Failed to load centers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadCenters();
+  }, []);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +66,7 @@ const Index = () => {
             </p>
           </div>
           
-          <RecCenterList centers={recCenters} />
+          <RecCenterList initialCenters={centers} />
         </div>
       </div>
       
