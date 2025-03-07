@@ -49,13 +49,29 @@ export const useRecCenterForm = (initialCenter: RecCenter = initialCenterState) 
     const { name, value } = e.target;
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
-      setCurrentCenter((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof RecCenter],
-          [child]: value,
-        },
-      }));
+      setCurrentCenter((prev) => {
+        // Create a safe copy of the nested object or use an empty object if it doesn't exist
+        const parentObject = typeof prev[parent as keyof RecCenter] === 'object' 
+          ? prev[parent as keyof RecCenter] 
+          : {};
+          
+        // Make sure parentObject is indeed an object before spreading
+        if (parentObject && typeof parentObject === 'object') {
+          return {
+            ...prev,
+            [parent]: {
+              ...parentObject,
+              [child]: value,
+            },
+          };
+        }
+        
+        // Fallback for non-object parent (shouldn't happen with our data structure)
+        return {
+          ...prev,
+          [parent]: { [child]: value },
+        };
+      });
     } else {
       setCurrentCenter((prev) => ({
         ...prev,
