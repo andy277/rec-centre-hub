@@ -3,10 +3,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 
+type UserRole = "admin" | "user";
+
 type AuthContextType = {
   session: Session | null;
   user: any | null;
   loading: boolean;
+  isAdmin: boolean;
+  userRole: UserRole | null;
   signUp: (email: string, password: string, username: string) => Promise<{ error: any | null }>;
   signIn: (email: string, password: string) => Promise<{ error: any | null }>;
   signOut: () => Promise<void>;
@@ -18,12 +22,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Fetch user role from the database
+  const fetchUserRole = async (userId: string) => {
+    if (!userId) return;
+    
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    if (error) {
+      console.error('Error fetching user role:', error);
+      return;
+    }
+    
+    if (data) {
+      const role = data.role as UserRole;
+      setUserRole(role);
+      setIsAdmin(role === 'admin');
+    } else {
+      setUserRole('user');
+      setIsAdmin(false);
+    }
+  };
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserRole(session.user.id);
+      }
       setLoading(false);
     });
 
@@ -31,6 +65,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchUserRole(session.user.id);
+      } else {
+        setUserRole(null);
+        setIsAdmin(false);
+      }
+      
       setLoading(false);
     });
 
@@ -76,6 +118,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     session,
     user,
     loading,
+    isAdmin,
+    userRole,
     signUp,
     signIn,
     signOut,

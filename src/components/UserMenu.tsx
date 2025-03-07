@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   DropdownMenu, 
@@ -8,12 +9,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, LogOut, Heart } from "lucide-react";
+import { User, LogOut, Heart, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const UserMenu = () => {
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
@@ -45,9 +46,22 @@ const UserMenu = () => {
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             <p className="font-medium">{user.email}</p>
+            {isAdmin && (
+              <p className="text-xs text-primary">Administrator</p>
+            )}
           </div>
         </div>
         <DropdownMenuSeparator />
+        
+        {isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin" className="cursor-pointer w-full flex items-center">
+              <Shield className="mr-2 h-4 w-4" />
+              <span>Admin Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
+        
         <DropdownMenuItem asChild>
           <Link to="/profile" className="cursor-pointer w-full flex items-center">
             <User className="mr-2 h-4 w-4" />

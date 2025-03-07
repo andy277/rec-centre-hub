@@ -1,19 +1,73 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Container } from "@/components/ui/container";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
   const from = location.state?.from || '/';
+
+  // Create admin account if it doesn't exist
+  useEffect(() => {
+    const createAdminAccount = async () => {
+      try {
+        // Try to sign up the admin user
+        const { data: userData, error: signUpError } = await supabase.auth.signUp({
+          email: "janedoe@gmail.com",
+          password: "123456",
+          options: {
+            data: {
+              username: "Jane Doe",
+            },
+          },
+        });
+
+        if (signUpError && signUpError.message !== "User already registered") {
+          console.error("Error creating admin user:", signUpError);
+          return;
+        }
+
+        // Check if user exists or was created
+        const { data: { user: adminUser } } = await supabase.auth.admin
+          ? await supabase.auth.admin.getUserByEmail("janedoe@gmail.com")
+          : { data: { user: userData?.user } };
+
+        if (adminUser) {
+          // Check if user already has admin role
+          const { data: existingRole } = await supabase
+            .from("user_roles")
+            .select("*")
+            .eq("user_id", adminUser.id)
+            .eq("role", "admin")
+            .maybeSingle();
+
+          // If no admin role, add it
+          if (!existingRole) {
+            await supabase
+              .from("user_roles")
+              .insert({
+                user_id: adminUser.id,
+                role: "admin",
+              });
+            
+            console.log("Admin role assigned to user");
+          }
+        }
+      } catch (error) {
+        console.error("Error in admin account creation:", error);
+      }
+    };
+
+    createAdminAccount();
+  }, []);
 
   // If already logged in, redirect to home
   if (user && !loading) {
@@ -49,6 +103,12 @@ const Auth = () => {
                 <SignUpForm />
               </TabsContent>
             </Tabs>
+
+            <div className="mt-4 text-sm text-center">
+              <p className="text-muted-foreground">
+                Admin account: <strong>janedoe@gmail.com</strong> / password: <strong>123456</strong>
+              </p>
+            </div>
           </div>
         </Container>
       </main>

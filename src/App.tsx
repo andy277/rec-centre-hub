@@ -10,6 +10,7 @@ import NotFound from "@/pages/NotFound";
 import Auth from "@/pages/Auth";
 import Profile from "@/pages/Profile";
 import Favorites from "@/pages/Favorites";
+import Admin from "@/pages/Admin";
 import { AuthProvider } from "@/contexts/AuthContext";
 import "@/App.css";
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
