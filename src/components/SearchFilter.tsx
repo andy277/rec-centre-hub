@@ -45,7 +45,7 @@ const SearchFilter = ({ onSearch }: SearchFilterProps) => {
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search by name, location, or amenities..."
+          placeholder="Search by activity (e.g., Swimming, Basketball) or center name..."
           className="flex-1 bg-transparent border-0 outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground px-3 py-1"
           value={query}
           onChange={handleInputChange}
@@ -62,28 +62,6 @@ const SearchFilter = ({ onSearch }: SearchFilterProps) => {
             <X className="h-5 w-5" />
           </button>
         )}
-      </div>
-      
-      <div className={`absolute left-0 right-0 top-full mt-1 rounded-lg border border-border bg-background shadow-md transition-all duration-200 overflow-hidden ${
-        isFocused && query.length > 1 ? 'max-h-60' : 'max-h-0 opacity-0 pointer-events-none'
-      }`}>
-        <div className="p-2">
-          <p className="text-xs text-muted-foreground px-2 py-1">
-            Popular searches:
-          </p>
-          {['Swimming pool', 'Basketball', 'Fitness center', 'Yoga', 'Portland', 'Tennis'].map((term) => (
-            <button
-              key={term}
-              className="block w-full text-left px-3 py-1.5 text-sm rounded-md hover:bg-secondary transition-colors"
-              onClick={() => {
-                setQuery(term);
-                onSearch(term);
-              }}
-            >
-              {term}
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
