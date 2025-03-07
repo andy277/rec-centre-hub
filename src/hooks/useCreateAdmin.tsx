@@ -1,103 +1,71 @@
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 export const useCreateAdmin = () => {
-  const [loading, setLoading] = useState(false);
-  const [created, setCreated] = useState(false);
-
   useEffect(() => {
     const createAdminAccount = async () => {
       try {
-        setLoading(true);
+        // Try to sign up the admin user
+        const { data: userData, error: signUpError } = await supabase.auth.signUp({
+          email: "janedoe@gmail.com",
+          password: "123456",
+          options: {
+            data: {
+              username: "Jane Doe",
+            },
+          },
+        });
+
+        if (signUpError && signUpError.message !== "User already registered") {
+          console.error("Error creating admin user:", signUpError);
+          return;
+        }
+
+        // Check if the user was created or already exists
+        let adminUser = userData?.user;
         
-        // First, check if the user already exists
-        const { data: existingUser } = await supabase.auth.admin.getUserByEmail("janedoe@gmail.com");
-        
-        if (!existingUser) {
-          // Create the admin user
-          const { data, error } = await supabase.auth.signUp({
+        // If we didn't get a user from sign up, try to get existing user
+        if (!adminUser) {
+          // Try to sign in to get the user
+          const { data: signInData } = await supabase.auth.signInWithPassword({
             email: "janedoe@gmail.com",
             password: "123456",
-            options: {
-              data: {
-                username: "Jane Doe",
-              },
-            },
           });
+          adminUser = signInData.user;
           
-          if (error) {
-            console.error("Error creating admin user:", error);
-            return;
+          // Sign out immediately if we signed in just to get the user
+          if (adminUser) {
+            await supabase.auth.signOut();
           }
-          
-          // User created, now add admin role
-          if (data.user) {
-            const { error: roleError } = await supabase
-              .from("user_roles")
-              .insert({
-                user_id: data.user.id,
-                role: "admin",
-              });
-            
-            if (roleError) {
-              console.error("Error assigning admin role:", roleError);
-              return;
-            }
-            
-            setCreated(true);
-            toast.success("Admin account created successfully");
-          }
-        } else {
-          // User already exists, check if they have admin role
-          const { data: roleData, error: roleError } = await supabase
+        }
+
+        if (adminUser) {
+          // Check if user already has admin role
+          const { data: existingRole } = await supabase
             .from("user_roles")
             .select("*")
-            .eq("user_id", existingUser.id)
+            .eq("user_id", adminUser.id)
             .eq("role", "admin")
             .maybeSingle();
-          
-          if (roleError) {
-            console.error("Error checking admin role:", roleError);
-            return;
-          }
-          
-          // If no admin role found, assign it
-          if (!roleData) {
-            const { error } = await supabase
+
+          // If no admin role, add it
+          if (!existingRole) {
+            await supabase
               .from("user_roles")
               .insert({
-                user_id: existingUser.id,
+                user_id: adminUser.id,
                 role: "admin",
               });
             
-            if (error) {
-              console.error("Error assigning admin role:", error);
-              return;
-            }
-            
-            toast.success("Admin role assigned to existing user");
-          } else {
-            toast.info("Admin account already exists");
+            console.log("Admin role assigned to user");
           }
-          
-          setCreated(true);
         }
       } catch (error) {
-        console.error("Error in createAdminAccount:", error);
-        toast.error("Failed to create admin account");
-      } finally {
-        setLoading(false);
+        console.error("Error in admin account creation:", error);
       }
     };
-    
-    // We'll try to create the admin account when this hook is first used
+
     createAdminAccount();
   }, []);
-  
-  return { loading, created };
 };
-
-// Note: This hook is for demonstration purposes.
-// In a real application, admin creation would be handled more securely.
