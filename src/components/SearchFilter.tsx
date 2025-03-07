@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Search, X } from 'lucide-react';
 
 interface SearchFilterProps {
@@ -11,13 +11,19 @@ const SearchFilter = ({ onSearch }: SearchFilterProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onSearch(query);
-    }, 300);
-    
-    return () => clearTimeout(timer);
-  }, [query, onSearch]);
+  const handleSearch = () => {
+    onSearch(query);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   const handleClear = () => {
     setQuery('');
@@ -32,14 +38,18 @@ const SearchFilter = ({ onSearch }: SearchFilterProps) => {
       isFocused ? 'border-primary shadow-sm ring-1 ring-primary/20' : 'border-border'
     } transition-all duration-200`}>
       <div className="flex items-center px-3 py-2">
-        <Search className={`h-5 w-5 ${isFocused ? 'text-primary' : 'text-muted-foreground'} transition-colors duration-200`} />
+        <Search 
+          className={`h-5 w-5 ${isFocused ? 'text-primary' : 'text-muted-foreground'} transition-colors duration-200`}
+          onClick={handleSearch}
+        />
         <input
           ref={inputRef}
           type="text"
           placeholder="Search by name, location, or amenities..."
           className="flex-1 bg-transparent border-0 outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground px-3 py-1"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />

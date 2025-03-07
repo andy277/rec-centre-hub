@@ -18,6 +18,7 @@ export const RecCenterList = ({ initialCenters }: RecCenterListProps) => {
   const [loading, setLoading] = useState(!initialCenters);
   const [error, setError] = useState<string | null>(null);
   
+  // Load centers on initial mount only
   useEffect(() => {
     if (!initialCenters) {
       const loadCenters = async () => {
@@ -38,6 +39,7 @@ export const RecCenterList = ({ initialCenters }: RecCenterListProps) => {
     }
   }, [initialCenters]);
   
+  // Handle search separately without automatic execution
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     setLoading(true);
