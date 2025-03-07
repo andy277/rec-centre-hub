@@ -1,23 +1,19 @@
-
 import { useState, useEffect } from 'react';
 import { ArrowDown } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import RecCenterList from '../components/RecCenterList';
 import { fetchAllCenters } from '@/services/recCenterService';
 import type { RecCenter } from '@/types/database';
 
 const Index = () => {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [centers, setCenters] = useState<RecCenter[]>([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     const loadCenters = async () => {
       try {
-        const data = await fetchAllCenters();
-        setCenters(data);
+        await fetchAllCenters();
       } catch (error) {
         console.error('Failed to load centers:', error);
       } finally {
@@ -57,20 +53,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       
-      <div id="explore-section" className="container mx-auto px-4 md:px-6 py-16 md:py-24">
-        <div className={`transition-all duration-1000 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <div className="max-w-xl mx-auto text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Explore Recreation Centers</h2>
-            <p className="text-lg text-foreground/80">
-              Discover the perfect recreation facility for your fitness journey. Browse our curated selection of top-rated centers.
-            </p>
-          </div>
-          
-          <RecCenterList initialCenters={centers} />
-        </div>
-      </div>
-      
-      <div className="bg-gradient-to-r from-secondary/40 to-secondary/10 py-16 md:py-24">
+      <div id="explore-section" className="bg-gradient-to-r from-secondary/40 to-secondary/10 py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
