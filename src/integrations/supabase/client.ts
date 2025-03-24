@@ -13,6 +13,32 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    storage: localStorage,
+    storage: typeof window !== 'undefined' ? localStorage : null,
   },
+  global: {
+    headers: {
+      'x-client-info': 'lovable-recreation-centers-app'
+    },
+  },
+  db: {
+    schema: 'public',
+  }
 });
+
+// Function to test the connection to Supabase
+export const testSupabaseConnection = async () => {
+  try {
+    const { data, error } = await supabase.from('rec_centers').select('count(*)', { count: 'exact', head: true });
+    
+    if (error) {
+      console.error('Supabase connection test failed:', error);
+      return { success: false, error };
+    }
+    
+    console.log('Supabase connection test successful:', data);
+    return { success: true, data };
+  } catch (err) {
+    console.error('Unexpected error testing Supabase connection:', err);
+    return { success: false, error: err };
+  }
+};

@@ -1,20 +1,29 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import type { RecCenter, Program } from "@/types/database";
 
 export async function fetchAllCenters(): Promise<RecCenter[]> {
   console.log("Fetching all centers from Supabase...");
-  const { data, error } = await supabase
-    .from("rec_centers")
-    .select("*");
+  try {
+    const { data, error } = await supabase
+      .from("rec_centers")
+      .select("*");
 
-  if (error) {
-    console.error("Error fetching recreation centers:", error);
-    throw new Error(`Failed to fetch recreation centers: ${error.message}`);
+    if (error) {
+      console.error("Error fetching recreation centers:", error);
+      throw new Error(`Failed to fetch recreation centers: ${error.message}`);
+    }
+
+    if (!data || data.length === 0) {
+      console.log("No recreation centers found in the database");
+      return [];
+    }
+
+    console.log(`Successfully fetched ${data?.length || 0} centers`);
+    return data as RecCenter[];
+  } catch (err) {
+    console.error("Unexpected error in fetchAllCenters:", err);
+    throw err;
   }
-
-  console.log(`Successfully fetched ${data?.length || 0} centers`);
-  return data as RecCenter[];
 }
 
 export async function fetchCenterById(id: string): Promise<RecCenter | null> {

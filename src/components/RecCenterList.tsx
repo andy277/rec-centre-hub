@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from 'react';
-import { Layout, Grid, Loader2 } from 'lucide-react';
+import { Layout, Grid, Loader2, RefreshCw } from 'lucide-react';
 import RecCenter from './RecCenter';
 import SearchFilter from './SearchFilter';
 import { RecCenter as RecCenterType } from '@/types/database';
 import { fetchAllCenters, filterCenters } from '@/services/recCenterService';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, testSupabaseConnection } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
 
 interface RecCenterListProps {
   initialCenters?: RecCenterType[];
@@ -19,42 +20,43 @@ export const RecCenterList = ({ initialCenters }: RecCenterListProps) => {
   const [filteredCenters, setFilteredCenters] = useState<RecCenterType[]>(initialCenters || []);
   const [loading, setLoading] = useState(!initialCenters);
   const [error, setError] = useState<string | null>(null);
+  const [connectionTested, setConnectionTested] = useState(false);
+  
+  // Function to load recreation centers
+  const loadCenters = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Test Supabase connection first
+      const connectionTest = await testSupabaseConnection();
+      setConnectionTested(true);
+            
+      if (!connectionTest.success) {
+        console.error("Supabase connection error:", connectionTest.error);
+        setError(`Failed to connect to database. Please check your network connection and refresh the page.`);
+        toast.error("Database connection issue");
+        setLoading(false);
+        return;
+      }
+      
+      console.log("Supabase connection successful, fetching centers...");
+      const data = await fetchAllCenters();
+      console.log("Centers fetched:", data.length);
+      setCenters(data);
+      setFilteredCenters(data);
+    } catch (err) {
+      console.error("Failed to load rec centers:", err);
+      setError("Failed to load recreation centers. Please try again later.");
+      toast.error("Error loading data");
+    } finally {
+      setLoading(false);
+    }
+  };
   
   // Load centers on initial mount only
   useEffect(() => {
     if (!initialCenters) {
-      const loadCenters = async () => {
-        try {
-          setLoading(true);
-          setError(null);
-          
-          // Check Supabase connection first
-          const { data: connectionTest, error: connectionError } = await supabase
-            .from('rec_centers')
-            .select('count(*)', { count: 'exact', head: true });
-            
-          if (connectionError) {
-            console.error("Supabase connection error:", connectionError);
-            setError(`Failed to connect to database: ${connectionError.message}`);
-            toast.error("Database connection issue. Please check your network connection.");
-            setLoading(false);
-            return;
-          }
-          
-          console.log("Supabase connection successful, fetching centers...");
-          const data = await fetchAllCenters();
-          console.log("Centers fetched:", data.length);
-          setCenters(data);
-          setFilteredCenters(data);
-        } catch (err) {
-          console.error("Failed to load rec centers:", err);
-          setError("Failed to load recreation centers. Please try again later.");
-          toast.error("Error loading data");
-        } finally {
-          setLoading(false);
-        }
-      };
-      
       loadCenters();
     }
   }, [initialCenters]);
@@ -79,16 +81,32 @@ export const RecCenterList = ({ initialCenters }: RecCenterListProps) => {
     }
   };
 
+  // Function to retry loading centers
+  const handleRetry = () => {
+    loadCenters();
+  };
+
   if (error) {
     return (
       <div className="py-12 text-center">
         <div className="text-destructive mb-4">{error}</div>
-        <button 
-          onClick={() => window.location.reload()}
+        <Button 
+          onClick={handleRetry}
           className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition-colors"
         >
-          Retry
-        </button>
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Retry Connection
+        </Button>
+        {connectionTested && (
+          <div className="mt-4 text-sm text-muted-foreground">
+            <p>If the issue persists, please check that:</p>
+            <ul className="list-disc list-inside mt-2">
+              <li>Your internet connection is stable</li>
+              <li>Your Supabase project is online and accessible</li>
+              <li>You are not using an ad blocker that might block the connection</li>
+            </ul>
+          </div>
+        )}
       </div>
     );
   }
