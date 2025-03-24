@@ -3,6 +3,7 @@ import { RecCenterList } from "@/components/RecCenterList";
 import { Container } from "@/components/ui/container";
 import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/integrations/supabase/client";
 
 const Centers = () => {
   return (
