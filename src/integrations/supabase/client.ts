@@ -62,6 +62,7 @@ export function getSupabaseDebugInfo() {
     keyPreview: SUPABASE_PUBLISHABLE_KEY.substring(0, 10) + "...",
     localStorageAvailable: typeof localStorage !== 'undefined',
     supabaseClientInitialized: !!supabase,
-    apiVersion: supabase?.rest.headers['X-Client-Info'] || 'unknown'
+    // Remove the protected 'rest' property access and replace with version info
+    clientVersion: "@supabase/supabase-js"
   };
 }
