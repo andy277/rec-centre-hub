@@ -5,6 +5,8 @@ import RecCenter from './RecCenter';
 import SearchFilter from './SearchFilter';
 import { RecCenter as RecCenterType } from '@/types/database';
 import { fetchAllCenters, filterCenters } from '@/services/recCenterService';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface RecCenterListProps {
   initialCenters?: RecCenterType[];
@@ -24,12 +26,30 @@ export const RecCenterList = ({ initialCenters }: RecCenterListProps) => {
       const loadCenters = async () => {
         try {
           setLoading(true);
+          setError(null);
+          
+          // Check Supabase connection first
+          const { data: connectionTest, error: connectionError } = await supabase
+            .from('rec_centers')
+            .select('count(*)', { count: 'exact', head: true });
+            
+          if (connectionError) {
+            console.error("Supabase connection error:", connectionError);
+            setError(`Failed to connect to database: ${connectionError.message}`);
+            toast.error("Database connection issue. Please check your network connection.");
+            setLoading(false);
+            return;
+          }
+          
+          console.log("Supabase connection successful, fetching centers...");
           const data = await fetchAllCenters();
+          console.log("Centers fetched:", data.length);
           setCenters(data);
           setFilteredCenters(data);
         } catch (err) {
           console.error("Failed to load rec centers:", err);
           setError("Failed to load recreation centers. Please try again later.");
+          toast.error("Error loading data");
         } finally {
           setLoading(false);
         }

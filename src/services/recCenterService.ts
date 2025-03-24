@@ -3,15 +3,17 @@ import { supabase } from "@/integrations/supabase/client";
 import type { RecCenter, Program } from "@/types/database";
 
 export async function fetchAllCenters(): Promise<RecCenter[]> {
+  console.log("Fetching all centers from Supabase...");
   const { data, error } = await supabase
     .from("rec_centers")
     .select("*");
 
   if (error) {
     console.error("Error fetching recreation centers:", error);
-    throw new Error("Failed to fetch recreation centers");
+    throw new Error(`Failed to fetch recreation centers: ${error.message}`);
   }
 
+  console.log(`Successfully fetched ${data?.length || 0} centers`);
   return data as RecCenter[];
 }
 
